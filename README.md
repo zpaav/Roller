@@ -5,8 +5,8 @@ Version: 1.1
 Automatically performs Corsair rolls.
 
 Commands:
-Roller On/Start/Go
-Roller Stop/Off
+Roller On/Start/Go/Enable/On/Engage
+Roller Stop/Off/Quit/End/Disable/Disengage
 
 Roller Roll1 <Name of Roll>    	Sets the first roll
 Roller Roll2 <Name of Roll>		Sets the second roll
