@@ -1,7 +1,7 @@
 Author: Selindrile
 Thanks to: Balloon for creating Rolltracker
 
-Version: 1.1
+Version: 1.3
 Automatically performs Corsair rolls.
 
 Commands:
