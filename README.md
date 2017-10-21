@@ -14,3 +14,8 @@ Roller Roll2 <Name of Roll>		Sets the second roll
 Presets:
 
 Roller TP
+Roller Acc
+Roller WS
+Roller Nuke
+Roller Pet
+Roller PetNuke
