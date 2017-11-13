@@ -56,7 +56,7 @@ windower.register_event('addon command',function (...)
 		
     else
 		if cmd[1]:lower() == "help" then
-			windower.add_to_chat(7,'To start or stop auto rolling type //f')
+			windower.add_to_chat(7,'To start or stop auto rolling type //roller roll')
 			windower.add_to_chat(7,'To set rolls use //roller roll# rollname')
 		
 		elseif cmd[1]:lower() == "rollcall" then
