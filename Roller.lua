@@ -25,7 +25,7 @@
 --SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.name = 'Roller'
-_addon.version = '1.7'
+_addon.version = '1.8'
 _addon.author = 'Selindrile, thanks to: Balloon and Lorand'
 _addon.commands = {'roller','roll'}
 
@@ -38,6 +38,8 @@ defaults = {}
 defaults.Roll_ind_1 = 17
 defaults.Roll_ind_2 = 19
 zonedelay = 6
+
+lastRoll = 0
 
 settings = config.load(defaults)
 
@@ -293,23 +295,28 @@ windower.register_event('action', function(act)
 		if act.actor_id == player.id then
 			--If roll is lucky or 11 returns.
 			
-			if rollNum == rollInfo[rollID][15] or rollNum == 11 then return end
+			if rollNum == rollInfo[rollID][15] or rollNum == 11 then
+				lastRoll = rollNum
+				return
+			end
 			
 			if player.main_job == 'COR' then
 				
 				local abil_recasts = windower.ffxi.get_ability_recasts()
 				local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 				--windower.add_to_chat(7,'Double-Up Recast: '..abil_recasts[194]..'')
-				if abil_recasts[197] == 0 and rollNum == 10 then
+				if available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == 10 then
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
-				elseif abil_recasts[197] == 0 and rollNum == (rollInfo[rollID][15] - 1) then
+				elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == (rollInfo[rollID][15] - 1) then
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
-				elseif abil_recasts[197] == 0 and rollNum > 6 and rollNum == rollInfo[rollID][16] then
+				elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum > 6 and rollNum == rollInfo[rollID][16] then
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
 				elseif available_ja:contains(178) and abil_recasts[198] == 0 and not haveBuff('Crooked Cards') and rollNum < 9 then
 					windower.send_command('wait 5;input /ja "Double-Up" <me>')
-				elseif rollNum < 6 then
+				elseif rollNum < 6 or lastRoll == 11 then
 					windower.send_command('wait 5;input /ja "Double-Up" <me>')
+				else
+					lastRoll = rollNum
 				end
 			
 			elseif rollNum < 6 then
