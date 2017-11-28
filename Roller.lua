@@ -290,6 +290,7 @@ windower.register_event('action', function(act)
         local rollID = act.param
 		if rollID == 177 then return end
         local rollNum = act.targets[1].actions[1].param
+		--windower.add_to_chat(7,'rollNum: '..act.targets[1].actions[1].param..'')
 		local player = windower.ffxi.get_player()
 
 		if act.actor_id == player.id then
@@ -383,11 +384,16 @@ function doRoll()
 	if not (status == 'Idle' or status == 'Engaged') then return end
 	if haveBuff('Sneak') or haveBuff('Invisible') then return end
 	local abil_recasts = windower.ffxi.get_ability_recasts()
+	local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 
 	if player.main_job == 'COR' and abil_recasts[198] > 0 and abil_recasts[197] > 0 and abil_recasts[196] == 0 then windower.send_command('input /ja "Random Deal" <me>') return end
-	if player.main_job == 'COR' and haveBuff('Bust') then windower.send_command('input /ja "Fold" <me>') return end
+	if player.main_job == 'COR' and haveBuff('Bust') and available_ja:contains(178) and abil_recasts[198] == 0 then windower.send_command('input /ja "Fold" <me>') return end
 	if abil_recasts[193] > 0 then return end
 
+	if not haveBuff(Rollindex[settings.Roll_ind_1]) and not haveBuff(Rollindex[settings.Roll_ind_2]) then
+		lastRoll = 0
+	end
+	
 	if not haveBuff(Rollindex[settings.Roll_ind_1]) then
 		if player.main_job == 'COR' and player.main_job_level > 94 and abil_recasts[96] == 0 then 
 			windower.send_command('input /ja "Crooked Cards" <me>;wait 2;input /ja "'..Rollindex[settings.Roll_ind_1]..'" <me>')
@@ -395,7 +401,7 @@ function doRoll()
 			windower.send_command('input /ja "'..Rollindex[settings.Roll_ind_1]..'" <me>')
 		end
 		
-	elseif player.main_job == 'COR' and not haveBuff(Rollindex[settings.Roll_ind_2]) then
+	elseif player.main_job == 'COR' and not haveBuff(Rollindex[settings.Roll_ind_2]) and not haveBuff('Bust') then
 		windower.send_command('input /ja "'..Rollindex[settings.Roll_ind_2]..'" <me>')
 	end
 
