@@ -45,7 +45,16 @@ settings = config.load(defaults)
 
 windower.register_event('addon command',function (...)
     cmd = {...}
-	if cmd[1] == nil or cmd[1]:lower() == "rolls" then
+
+	 if cmd[1] ~= nil then
+		cmd[1] = cmd[1]:lower()
+	end
+	
+	if cmd[2] ~= nil then
+		cmd[2] = cmd[2]:lower()
+	end
+	
+	if cmd[1] == nil or cmd[1] == "rolls" then
 
 		if autoroll == true then
 			windower.add_to_chat(7,'Automatic Rolling is ON.')
@@ -57,15 +66,15 @@ windower.register_event('addon command',function (...)
 		windower.add_to_chat(7,'Roll 2: '..Rollindex[settings.Roll_ind_2]..'')
 		
     else
-		if cmd[1]:lower() == "help" then
+		if cmd[1] == "help" then
 			windower.add_to_chat(7,'To start or stop auto rolling type //roller roll')
 			windower.add_to_chat(7,'To set rolls use //roller roll# rollname')
 		
-		elseif cmd[1]:lower() == "rollcall" then
+		elseif cmd[1] == "rollcall" then
 				if zonedelay > 5 then doRoll() end
 				windower.send_command('@wait 10;roller rollcall')
 				zonedelay = zonedelay + 1
-		elseif cmd[1]:lower() == "start" or cmd[1]:lower() == "go" or cmd[1]:lower() == "begin" or cmd[1]:lower() == "enable" or cmd[1]:lower() == "on" or cmd[1]:lower() == "engage" then
+		elseif cmd[1] == "start" or cmd[1] == "go" or cmd[1] == "begin" or cmd[1] == "enable" or cmd[1] == "on" or cmd[1] == "engage" or cmd[1] == "resume" then
 			zonedelay = 6
 			if autoroll == false then
 				autoroll = true
@@ -74,7 +83,7 @@ windower.register_event('addon command',function (...)
 			elseif autoroll == true then
 				windower.add_to_chat(7,'Automatic Rolling already enabled.')
 			end
-		elseif cmd[1]:lower() == "stop" or cmd[1]:lower() == "quit" or cmd[1]:lower() == "end" or cmd[1]:lower() == "disable" or cmd[1]:lower() == "off" or cmd[1]:lower() == "disengage" then
+		elseif cmd[1] == "stop" or cmd[1] == "quit" or cmd[1] == "end" or cmd[1] == "disable" or cmd[1] == "off" or cmd[1] == "disengage" or cmd[1] == "pause" then
 			zonedelay = 6
 			if autoroll == true then
 				autoroll = false
@@ -82,7 +91,7 @@ windower.register_event('addon command',function (...)
 			elseif autoroll == false then
 				windower.add_to_chat(7,'Automatic Rolling already disabled.')
 			end
-		elseif cmd[1]:lower() == "roll" then
+		elseif cmd[1] == "roll" then
 			zonedelay = 6
 			if autoroll == false then
 				autoroll = true
@@ -93,82 +102,82 @@ windower.register_event('addon command',function (...)
 				windower.add_to_chat(7,'Disabling Automatic Rolling.')
 			end
 
-		elseif cmd[1]:lower() == "melee" or cmd[1]:lower() == "tp" then
+		elseif cmd[1] == "melee" or cmd[1] == "tp" then
 			settings.Roll_ind_1 = 12
 			settings.Roll_ind_2 = 8
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 			
-		elseif cmd[1]:lower() == "acc" or cmd[1]:lower() == "highacc" then
+		elseif cmd[1] == "acc" or cmd[1] == "highacc" then
 			settings.Roll_ind_1 = 12
 			settings.Roll_ind_2 = 11
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1]:lower() == "ws" or cmd[1]:lower() == "wsd" then
+		elseif cmd[1] == "ws" or cmd[1] == "wsd" then
 			settings.Roll_ind_1 = 8
 			settings.Roll_ind_2 = 1
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1]:lower() == "nuke" or cmd[1]:lower() == "burst" then
+		elseif cmd[1] == "nuke" or cmd[1] == "burst" then
 			settings.Roll_ind_1 = 4
 			settings.Roll_ind_2 = 5
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1]:lower() == "pet" or cmd[1]:lower() == "petphy" then
+		elseif cmd[1] == "pet" or cmd[1] == "petphy" then
 			settings.Roll_ind_1 = 9
 			settings.Roll_ind_2 = 14
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1]:lower() == "petnuke" or cmd[1]:lower() == "petmagic" then
+		elseif cmd[1] == "petnuke" or cmd[1] == "petmagic" then
 			settings.Roll_ind_1 = 18
 			settings.Roll_ind_2 = 28
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1]:lower() == "roll1" then
+		elseif cmd[1] == "roll1" then
 			local rollchange = false
 			if cmd[2] == nil then windower.add_to_chat(7,'Roll 1: '..Rollindex[settings.Roll_ind_1]..'') return
-			elseif cmd[2]:lower():startswith("warlock") or cmd[2]:lower():startswith("macc") or cmd[2]:lower():startswith("magic ac") or cmd[2]:lower():startswith("rdm") then settings.Roll_ind_1 = 5 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("fight") or cmd[2]:lower():startswith("double") or cmd[2]:lower():startswith("dbl") or cmd[2]:lower():startswith("war") then settings.Roll_ind_1 = 1 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("monk") or cmd[2]:lower():startswith("subtle") or cmd[2]:lower():startswith("mnk") then settings.Roll_ind_1 = 2 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("heal") or cmd[2]:lower():startswith("cure") or cmd[2]:lower():startswith("whm") then settings.Roll_ind_1 = 3 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("wizard") or cmd[2]:lower():startswith("matk") or cmd[2]:lower():startswith("magic at") or cmd[2]:lower():startswith("blm") then settings.Roll_ind_1 = 4 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("rogue") or cmd[2]:lower():startswith("crit") or cmd[2]:lower():startswith("thf") then settings.Roll_ind_1 = 6 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("gallant") or cmd[2]:lower():startswith("def") or cmd[2]:lower():startswith("pld") then settings.Roll_ind_1 = 7 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("chaos") or cmd[2]:lower():startswith("attack") or cmd[2]:lower():startswith("atk") or cmd[2]:lower():startswith("drk") then settings.Roll_ind_1 = 8 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("beast") or cmd[2]:lower():startswith("pet at") or cmd[2]:lower():startswith("bst") then settings.Roll_ind_1 = 9 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("choral") or cmd[2]:lower():startswith("inter") or cmd[2]:lower():startswith("spell inter") or cmd[2]:lower():startswith("brd") then settings.Roll_ind_1 = 10 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("hunt") or cmd[2]:lower():startswith("acc") or  cmd[2]:lower():startswith("rng") then settings.Roll_ind_1 = 11 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("sam") or cmd[2]:lower():startswith("stp") or cmd[2]:lower():startswith("store") then settings.Roll_ind_1 = 12 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("nin") or cmd[2]:lower():startswith("eva") then settings.Roll_ind_1 = 13 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("drach") or cmd[2]:lower():startswith("pet ac") or cmd[2]:lower():startswith("drg") then settings.Roll_ind_1 = 14 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("evoke") or cmd[2]:lower():startswith("refresh") or cmd[2]:lower():startswith("smn") then settings.Roll_ind_1 = 15 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("magus") or cmd[2]:lower():startswith("mdb") or cmd[2]:lower():startswith("magic d") or cmd[2]:lower():startswith("blu") then settings.Roll_ind_1 = 16 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("cor") or cmd[2]:lower():startswith("exp") then settings.Roll_ind_1 = 17 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("pup") or cmd[2]:lower():startswith("pet m") then settings.Roll_ind_1 = 18 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("dance") or cmd[2]:lower():startswith("regen") or cmd[2]:lower():startswith("dnc") then settings.Roll_ind_1 = 19 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("sch") or cmd[2]:lower():startswith("conserve m") then settings.Roll_ind_1 = 20 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("bolt") or cmd[2]:lower():startswith("move") or cmd[2]:lower():startswith("flee") or cmd[2]:lower():startswith("speed") then settings.Roll_ind_1 = 21 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("cast") or cmd[2]:lower():startswith("fast") or cmd[2]:lower():startswith("fc") then settings.Roll_ind_1 = 22 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("course") or cmd[2]:lower():startswith("snap") then settings.Roll_ind_1 = 23 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("blitz") or cmd[2]:lower():startswith("delay") then settings.Roll_ind_1 = 24 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("tact") or cmd[2]:lower():startswith("regain") then settings.Roll_ind_1 = 25 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("all") or cmd[2]:lower():startswith("skillchain") then settings.Roll_ind_1 = 26 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("miser") or cmd[2]:lower():startswith("save tp") or cmd[2]:lower():startswith("conserve t") then settings.Roll_ind_1 = 27 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("companion") or cmd[2]:lower():startswith("pet r") then settings.Roll_ind_1 = 28 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("avenge") or cmd[2]:lower():startswith("counter") then settings.Roll_ind_1 = 29 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("natural") or cmd[2]:lower():startswith("enhance") or cmd[2]:lower():startswith("duration") then settings.Roll_ind_1 = 30 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("run") or cmd[2]:lower():startswith("meva") or cmd[2]:lower():startswith("magic e") then settings.Roll_ind_1 = 31 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("warlock") or cmd[2]:startswith("macc") or cmd[2]:startswith("magic ac") or cmd[2]:startswith("rdm") then settings.Roll_ind_1 = 5 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("fight") or cmd[2]:startswith("double") or cmd[2]:startswith("dbl") or cmd[2]:startswith("war") then settings.Roll_ind_1 = 1 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("monk") or cmd[2]:startswith("subtle") or cmd[2]:startswith("mnk") then settings.Roll_ind_1 = 2 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("heal") or cmd[2]:startswith("cure") or cmd[2]:startswith("whm") then settings.Roll_ind_1 = 3 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("wizard") or cmd[2]:startswith("matk") or cmd[2]:startswith("magic at") or cmd[2]:startswith("blm") then settings.Roll_ind_1 = 4 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("rogue") or cmd[2]:startswith("crit") or cmd[2]:startswith("thf") then settings.Roll_ind_1 = 6 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("gallant") or cmd[2]:startswith("def") or cmd[2]:startswith("pld") then settings.Roll_ind_1 = 7 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("chaos") or cmd[2]:startswith("attack") or cmd[2]:startswith("atk") or cmd[2]:startswith("drk") then settings.Roll_ind_1 = 8 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("beast") or cmd[2]:startswith("pet at") or cmd[2]:startswith("bst") then settings.Roll_ind_1 = 9 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("choral") or cmd[2]:startswith("inter") or cmd[2]:startswith("spell inter") or cmd[2]:startswith("brd") then settings.Roll_ind_1 = 10 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("hunt") or cmd[2]:startswith("acc") or  cmd[2]:startswith("rng") then settings.Roll_ind_1 = 11 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("sam") or cmd[2]:startswith("stp") or cmd[2]:startswith("store") then settings.Roll_ind_1 = 12 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("nin") or cmd[2]:startswith("eva") then settings.Roll_ind_1 = 13 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("drach") or cmd[2]:startswith("pet ac") or cmd[2]:startswith("drg") then settings.Roll_ind_1 = 14 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("evoke") or cmd[2]:startswith("refresh") or cmd[2]:startswith("smn") then settings.Roll_ind_1 = 15 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("magus") or cmd[2]:startswith("mdb") or cmd[2]:startswith("magic d") or cmd[2]:startswith("blu") then settings.Roll_ind_1 = 16 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("cor") or cmd[2]:startswith("exp") then settings.Roll_ind_1 = 17 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("pup") or cmd[2]:startswith("pet m") then settings.Roll_ind_1 = 18 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("dance") or cmd[2]:startswith("regen") or cmd[2]:startswith("dnc") then settings.Roll_ind_1 = 19 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("sch") or cmd[2]:startswith("conserve m") then settings.Roll_ind_1 = 20 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("bolt") or cmd[2]:startswith("move") or cmd[2]:startswith("flee") or cmd[2]:startswith("speed") then settings.Roll_ind_1 = 21 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("cast") or cmd[2]:startswith("fast") or cmd[2]:startswith("fc") then settings.Roll_ind_1 = 22 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("course") or cmd[2]:startswith("snap") then settings.Roll_ind_1 = 23 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("blitz") or cmd[2]:startswith("delay") then settings.Roll_ind_1 = 24 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("tact") or cmd[2]:startswith("regain") then settings.Roll_ind_1 = 25 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("all") or cmd[2]:startswith("skillchain") then settings.Roll_ind_1 = 26 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("miser") or cmd[2]:startswith("save tp") or cmd[2]:startswith("conserve t") then settings.Roll_ind_1 = 27 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("companion") or cmd[2]:startswith("pet r") then settings.Roll_ind_1 = 28 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("avenge") or cmd[2]:startswith("counter") then settings.Roll_ind_1 = 29 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("natural") or cmd[2]:startswith("enhance") or cmd[2]:startswith("duration") then settings.Roll_ind_1 = 30 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("run") or cmd[2]:startswith("meva") or cmd[2]:startswith("magic e") then settings.Roll_ind_1 = 31 config.save(settings) rollchange = true
 			end
 			
 			if rollchange == true then
@@ -177,40 +186,40 @@ windower.register_event('addon command',function (...)
 				windower.add_to_chat(7,'Invalid roll name, Roll 1 remains: '..Rollindex[settings.Roll_ind_1]..'')
 			end
 
-		elseif cmd[1]:lower() == "roll2" then
+		elseif cmd[1] == "roll2" then
 			local rollchange = false
 			if cmd[2] == nil then windower.add_to_chat(7,'Roll 1: '..Rollindex[settings.Roll_ind_2]..'') return
-			elseif cmd[2]:lower():startswith("warlock") or cmd[2]:lower():startswith("macc") or cmd[2]:lower():startswith("magic ac") or cmd[2]:lower():startswith("rdm") then settings.Roll_ind_2 = 5 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("fight") or cmd[2]:lower():startswith("double") or cmd[2]:lower():startswith("dbl") or cmd[2]:lower():startswith("war") then settings.Roll_ind_2 = 1 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("monk") or cmd[2]:lower():startswith("subtle") or cmd[2]:lower():startswith("mnk") then settings.Roll_ind_2 = 2 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("heal") or cmd[2]:lower():startswith("cure") or cmd[2]:lower():startswith("whm") then settings.Roll_ind_2 = 3 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("wizard") or cmd[2]:lower():startswith("matk") or cmd[2]:lower():startswith("magic at") or cmd[2]:lower():startswith("blm") then settings.Roll_ind_2 = 4 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("rogue") or cmd[2]:lower():startswith("crit") or cmd[2]:lower():startswith("thf") then settings.Roll_ind_2 = 6 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("gallant") or cmd[2]:lower():startswith("def") or cmd[2]:lower():startswith("pld") then settings.Roll_ind_2 = 7 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("chaos") or cmd[2]:lower():startswith("attack") or cmd[2]:lower():startswith("atk") or cmd[2]:lower():startswith("drk") then settings.Roll_ind_2 = 8 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("beast") or cmd[2]:lower():startswith("pet at") or cmd[2]:lower():startswith("bst") then settings.Roll_ind_2 = 9 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("choral") or cmd[2]:lower():startswith("inter") or cmd[2]:lower():startswith("spell inter") or cmd[2]:lower():startswith("brd") then settings.Roll_ind_2 = 10 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("hunt") or cmd[2]:lower():startswith("acc") or  cmd[2]:lower():startswith("rng") then settings.Roll_ind_2 = 11 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("sam") or cmd[2]:lower():startswith("stp") or cmd[2]:lower():startswith("store") then settings.Roll_ind_2 = 12 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("nin") or cmd[2]:lower():startswith("eva") then settings.Roll_ind_2 = 13 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("drach") or cmd[2]:lower():startswith("pet ac") or cmd[2]:lower():startswith("drg") then settings.Roll_ind_2 = 14 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("evoke") or cmd[2]:lower():startswith("refresh") or cmd[2]:lower():startswith("smn") then settings.Roll_ind_2 = 15 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("magus") or cmd[2]:lower():startswith("mdb") or cmd[2]:lower():startswith("magic d") or cmd[2]:lower():startswith("blu") then settings.Roll_ind_2 = 16 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("cor") or cmd[2]:lower():startswith("exp") then settings.Roll_ind_2 = 17 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("pup") or cmd[2]:lower():startswith("pet m") then settings.Roll_ind_2 = 18 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("dance") or cmd[2]:lower():startswith("regen") or cmd[2]:lower():startswith("dnc") then settings.Roll_ind_2 = 19 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("sch") or cmd[2]:lower():startswith("conserve m") then settings.Roll_ind_2 = 20 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("bolt") or cmd[2]:lower():startswith("move") or cmd[2]:lower():startswith("flee") or cmd[2]:lower():startswith("speed") then settings.Roll_ind_2 = 21 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("cast") or cmd[2]:lower():startswith("fast") or cmd[2]:lower():startswith("fc") then settings.Roll_ind_2 = 22 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("course") or cmd[2]:lower():startswith("snap") then settings.Roll_ind_2 = 23 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("blitz") or cmd[2]:lower():startswith("delay") then settings.Roll_ind_2 = 24 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("tact") or cmd[2]:lower():startswith("regain") then settings.Roll_ind_2 = 25 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("all") or cmd[2]:lower():startswith("skillchain") then settings.Roll_ind_2 = 26 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("miser") or cmd[2]:lower():startswith("save tp") or cmd[2]:lower():startswith("conserve t") then settings.Roll_ind_2 = 27 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("companion") or cmd[2]:lower():startswith("pet r") then settings.Roll_ind_2 = 28 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("avenge") or cmd[2]:lower():startswith("counter") then settings.Roll_ind_2 = 29 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("natural") or cmd[2]:lower():startswith("enhance") or cmd[2]:lower():startswith("duration") then settings.Roll_ind_2 = 30 config.save(settings) rollchange = true
-			elseif cmd[2]:lower():startswith("run") or cmd[2]:lower():startswith("meva") or cmd[2]:lower():startswith("magic e") then settings.Roll_ind_2 = 31 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("warlock") or cmd[2]:startswith("macc") or cmd[2]:startswith("magic ac") or cmd[2]:startswith("rdm") then settings.Roll_ind_2 = 5 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("fight") or cmd[2]:startswith("double") or cmd[2]:startswith("dbl") or cmd[2]:startswith("war") then settings.Roll_ind_2 = 1 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("monk") or cmd[2]:startswith("subtle") or cmd[2]:startswith("mnk") then settings.Roll_ind_2 = 2 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("heal") or cmd[2]:startswith("cure") or cmd[2]:startswith("whm") then settings.Roll_ind_2 = 3 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("wizard") or cmd[2]:startswith("matk") or cmd[2]:startswith("magic at") or cmd[2]:startswith("blm") then settings.Roll_ind_2 = 4 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("rogue") or cmd[2]:startswith("crit") or cmd[2]:startswith("thf") then settings.Roll_ind_2 = 6 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("gallant") or cmd[2]:startswith("def") or cmd[2]:startswith("pld") then settings.Roll_ind_2 = 7 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("chaos") or cmd[2]:startswith("attack") or cmd[2]:startswith("atk") or cmd[2]:startswith("drk") then settings.Roll_ind_2 = 8 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("beast") or cmd[2]:startswith("pet at") or cmd[2]:startswith("bst") then settings.Roll_ind_2 = 9 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("choral") or cmd[2]:startswith("inter") or cmd[2]:startswith("spell inter") or cmd[2]:startswith("brd") then settings.Roll_ind_2 = 10 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("hunt") or cmd[2]:startswith("acc") or  cmd[2]:startswith("rng") then settings.Roll_ind_2 = 11 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("sam") or cmd[2]:startswith("stp") or cmd[2]:startswith("store") then settings.Roll_ind_2 = 12 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("nin") or cmd[2]:startswith("eva") then settings.Roll_ind_2 = 13 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("drach") or cmd[2]:startswith("pet ac") or cmd[2]:startswith("drg") then settings.Roll_ind_2 = 14 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("evoke") or cmd[2]:startswith("refresh") or cmd[2]:startswith("smn") then settings.Roll_ind_2 = 15 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("magus") or cmd[2]:startswith("mdb") or cmd[2]:startswith("magic d") or cmd[2]:startswith("blu") then settings.Roll_ind_2 = 16 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("cor") or cmd[2]:startswith("exp") then settings.Roll_ind_2 = 17 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("pup") or cmd[2]:startswith("pet m") then settings.Roll_ind_2 = 18 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("dance") or cmd[2]:startswith("regen") or cmd[2]:startswith("dnc") then settings.Roll_ind_2 = 19 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("sch") or cmd[2]:startswith("conserve m") then settings.Roll_ind_2 = 20 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("bolt") or cmd[2]:startswith("move") or cmd[2]:startswith("flee") or cmd[2]:startswith("speed") then settings.Roll_ind_2 = 21 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("cast") or cmd[2]:startswith("fast") or cmd[2]:startswith("fc") then settings.Roll_ind_2 = 22 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("course") or cmd[2]:startswith("snap") then settings.Roll_ind_2 = 23 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("blitz") or cmd[2]:startswith("delay") then settings.Roll_ind_2 = 24 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("tact") or cmd[2]:startswith("regain") then settings.Roll_ind_2 = 25 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("all") or cmd[2]:startswith("skillchain") then settings.Roll_ind_2 = 26 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("miser") or cmd[2]:startswith("save tp") or cmd[2]:startswith("conserve t") then settings.Roll_ind_2 = 27 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("companion") or cmd[2]:startswith("pet r") then settings.Roll_ind_2 = 28 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("avenge") or cmd[2]:startswith("counter") then settings.Roll_ind_2 = 29 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("natural") or cmd[2]:startswith("enhance") or cmd[2]:startswith("duration") then settings.Roll_ind_2 = 30 config.save(settings) rollchange = true
+			elseif cmd[2]:startswith("run") or cmd[2]:startswith("meva") or cmd[2]:startswith("magic e") then settings.Roll_ind_2 = 31 config.save(settings) rollchange = true
 			end
 			
 			if rollchange == true then
