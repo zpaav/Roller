@@ -92,14 +92,20 @@ windower.register_event('addon command',function (...)
 				windower.add_to_chat(7,'Automatic Rolling already disabled.')
 			end
 		elseif cmd[1] == "roll" then
-			zonedelay = 6
-			if autoroll == false then
-				autoroll = true
-				windower.add_to_chat(7,'Enabling Automatic Rolling.')
-				doRoll()
-			elseif autoroll == true then
-				autoroll = false 
-				windower.add_to_chat(7,'Disabling Automatic Rolling.')
+			if cmd[2] == "roll1" then
+				windower.send_command('input /ja "'..Rollindex[settings.Roll_ind_1]..'" <me>')
+			elseif cmd[2] == "roll2" then
+				windower.send_command('input /ja "'..Rollindex[settings.Roll_ind_2]..'" <me>')
+			else
+				zonedelay = 6
+				if autoroll == false then
+					autoroll = true
+					windower.add_to_chat(7,'Enabling Automatic Rolling.')
+					doRoll()
+				elseif autoroll == true then
+					autoroll = false 
+					windower.add_to_chat(7,'Disabling Automatic Rolling.')
+				end
 			end
 
 		elseif cmd[1] == "melee" or cmd[1] == "tp" then
@@ -387,11 +393,11 @@ Cities = S{
 function doRoll()
 	if Cities:contains(res.zones[windower.ffxi.get_info().zone].english) then return end
 	if not autoroll or haveBuff('amnesia') or haveBuff('impairment') then return end
+	if haveBuff('Sneak') or haveBuff('Invisible') then return end
 	local player = windower.ffxi.get_player()
 	if not (player.main_job == 'COR' or player.sub_job == 'COR') then return end
 	local status = res.statuses[windower.ffxi.get_player().status].english
 	if not (status == 'Idle' or status == 'Engaged') then return end
-	if haveBuff('Sneak') or haveBuff('Invisible') then return end
 	local abil_recasts = windower.ffxi.get_ability_recasts()
 	local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 
