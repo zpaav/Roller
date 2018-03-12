@@ -22,7 +22,7 @@
 --LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
 --ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
 --(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
---SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--SOFTWARE, EVEN IFIF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.name = 'Roller'
 _addon.version = '1.8'
@@ -33,10 +33,14 @@ require('luau')
 chat = require('chat')
 chars = require('chat.chars')
 packets = require('packets')
+texts = require('texts')
 
 defaults = {}
 defaults.Roll_ind_1 = 17
 defaults.Roll_ind_2 = 19
+defaults.showdisplay = true
+defaults.displayx = nil
+defaults.displayy = nil
 zonedelay = 6
 
 lastRoll = 0
@@ -69,7 +73,21 @@ windower.register_event('addon command',function (...)
 		if cmd[1] == "help" then
 			windower.add_to_chat(7,'To start or stop auto rolling type //roller roll')
 			windower.add_to_chat(7,'To set rolls use //roller roll# rollname')
-		
+		elseif cmd[1] == "display" then
+			if cmd[2] == nil then
+				settings.showdisplay = not settings.showdisplay
+				config.save(settings)
+			elseif cmd[2] == 'on' or cmd[2] == 'show' then
+				settings.showdisplay = true
+				config.save(settings)
+				windower.add_to_chat(7,'Display On.')
+			elseif cmd[2] == 'off' or cmd[2] == 'hide' then
+				settings.showdisplay = false
+				config.save(settings)
+				windower.add_to_chat(7,'Display Off.')
+			else
+				windower.add_to_chat(7,'Not a recognized display subcommand. (Show, Hide)')
+			end				
 		elseif cmd[1] == "rollcall" then
 				if zonedelay > 5 then doRoll() end
 				windower.send_command('@wait 10;roller rollcall')
@@ -236,6 +254,8 @@ windower.register_event('addon command',function (...)
          end
         
     end
+	
+	update_displaybox()
 end)
 
 windower.register_event('load', function()
@@ -290,9 +310,11 @@ windower.register_event('load', function()
     end
     
     settings = config.load(defaults)
-	
-	windower.send_command('@wait 20;roller rollcall')
 
+	if settings.showdisplay then
+		create_display(settings)
+	end	
+	windower.send_command('@wait 20;roller rollcall')
 end)
 
 windower.register_event('action', function(act)
@@ -427,4 +449,88 @@ windower.register_event('lose buff', doRoll)
 windower.register_event('zone change', function()
 	zonedelay = 0
 	autoroll = false
+end)
+
+function create_display(settings)
+    if displayBox then displayBox:destroy() end
+
+    local windowersettings = windower.get_windower_settings()
+	local x,y
+	
+	if settings.displayx and settings.displayy then
+		x = settings.displayx
+		y = settings.displayy
+	elseif windowersettings["ui_x_res"] == 1920 and windowersettings["ui_y_res"] == 1080 then
+		x,y = windowersettings["ui_x_res"]-505, windowersettings["ui_y_res"]-18 -- -285, -18
+	else
+		x,y = 0, windowersettings["ui_y_res"]-17 -- -285, -18
+	end
+	
+    displayBox = texts.new()
+    displayBox:pos(x,y)
+    displayBox:font('Arial')--Arial
+    displayBox:size(12)
+    displayBox:bold(true)
+    displayBox:bg_alpha(0)--128
+    displayBox:right_justified(false)
+    displayBox:stroke_width(2)
+    displayBox:stroke_transparency(192)
+
+    update_displaybox(displayBox)
+end
+
+function update_displaybox()
+	local player = windower.ffxi.get_player()
+	if not player then return end
+	if not settings.showdisplay or not (player.main_job == 'COR' or player.sub_job == 'COR') then
+		if displayBox then displayBox:hide() end
+		return		
+	end
+	
+    -- Define colors for text in the display
+    local clr = {
+        h='\\cs(255,192,0)', -- Yellow for active booleans and non-default modals
+		w='\\cs(255,255,255)', -- White for labels and default modals
+        n='\\cs(192,192,192)', -- White for labels and default modals
+        s='\\cs(96,96,96)' -- Gray for inactive booleans
+    }
+
+    local info = {}
+    local orig = {}
+    local spc = '   '
+
+    -- Define labels for each modal state
+    local labels = {
+
+    }
+
+    displayBox:clear()
+	--displayBox:append(spc)
+
+ 	displayBox:append("Roll 1: "..Rollindex[settings.Roll_ind_1].."   ")
+	if windower.ffxi.get_player().main_job == 'COR' then
+		displayBox:append("Roll 2: "..Rollindex[settings.Roll_ind_2].."   ")
+	end
+	displayBox:append("Autoroll: ")
+	if autoroll == true then
+		displayBox:append("On")
+	else
+		displayBox:append("Off")
+	end
+    -- Update and display current info
+    displayBox:update(info)
+    displayBox:show()
+
+end
+
+windower.register_event('outgoing chunk', function(id, data)
+    if id == 0x00D and displayBox then
+        displayBox:hide()
+    end
+end)
+
+windower.register_event('incoming chunk', function(id, data)
+    if id == 0x00A and displayBox then
+        displayBox:show()
+    end
 end)
