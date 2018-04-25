@@ -126,9 +126,16 @@ windower.register_event('addon command',function (...)
 				end
 			end
 
-		elseif cmd[1] == "melee" or cmd[1] == "tp" then
+		elseif cmd[1] == "melee" then
 			settings.Roll_ind_1 = 12
 			settings.Roll_ind_2 = 8
+			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
+			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
+			config.save(settings)
+			
+		elseif cmd[1] == "tp" then
+			settings.Roll_ind_1 = 12
+			settings.Roll_ind_2 = 1
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
