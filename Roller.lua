@@ -430,8 +430,8 @@ function doRoll()
 	local abil_recasts = windower.ffxi.get_ability_recasts()
 	local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 
-	if player.main_job == 'COR' and abil_recasts[198] > 0 and abil_recasts[197] > 0 and abil_recasts[196] == 0 then windower.send_command('input /ja "Random Deal" <me>') return end
-	if player.main_job == 'COR' and haveBuff('Bust') and available_ja:contains(178) and abil_recasts[198] == 0 then windower.send_command('input /ja "Fold" <me>') return end
+	if player.main_job == 'COR' and abil_recasts[198] and abil_recasts[198] > 0 and abil_recasts[197] and abil_recasts[197] > 0 and abil_recasts[196] and abil_recasts[196] == 0 then windower.send_command('input /ja "Random Deal" <me>') return end
+	if player.main_job == 'COR' and haveBuff('Bust') and available_ja:contains(178) and abil_recasts[198] and abil_recasts[198] == 0 then windower.send_command('input /ja "Fold" <me>') return end
 	if abil_recasts[193] > 0 then return end
 
 	if not haveBuff(Rollindex[settings.Roll_ind_1]) and not haveBuff(Rollindex[settings.Roll_ind_2]) then
