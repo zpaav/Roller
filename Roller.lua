@@ -44,6 +44,8 @@ defaults.displayy = nil
 zonedelay = 6
 
 lastRoll = 0
+lastRollCrooked = false
+midRoll = false
 
 settings = config.load(defaults)
 
@@ -88,16 +90,13 @@ windower.register_event('addon command',function (...)
 			else
 				windower.add_to_chat(7,'Not a recognized display subcommand. (Show, Hide)')
 			end				
-		elseif cmd[1] == "rollcall" then
-				if zonedelay > 5 then doRoll() end
-				windower.send_command('@wait 10;roller rollcall')
-				zonedelay = zonedelay + 1
+		elseif cmd[1] == "midroll" and cmd[2] == 'off' then	
+			midRoll = false
 		elseif cmd[1] == "start" or cmd[1] == "go" or cmd[1] == "begin" or cmd[1] == "enable" or cmd[1] == "on" or cmd[1] == "engage" or cmd[1] == "resume" then
 			zonedelay = 6
 			if autoroll == false then
 				autoroll = true
 				windower.add_to_chat(7,'Enabling Automatic Rolling.')
-				doRoll()
 			elseif autoroll == true then
 				windower.add_to_chat(7,'Automatic Rolling already enabled.')
 			end
@@ -321,12 +320,9 @@ windower.register_event('load', function()
 	if settings.showdisplay then
 		create_display(settings)
 	end	
-	windower.send_command('@wait 20;roller rollcall')
 end)
 
 windower.register_event('action', function(act)
-
-	if not autoroll or haveBuff('amnesia') or haveBuff('impairment') then return end
 
     if act.category == 6 and table.containskey(rollInfo, act.param) then
 
@@ -339,32 +335,44 @@ windower.register_event('action', function(act)
 
 		if act.actor_id == player.id then
 			--If roll is lucky or 11 returns.
-			
+			if rollID ~= 123 then
+				lastRollCrooked = false
+			end
 			if rollNum == rollInfo[rollID][15] or rollNum == 11 then
 				lastRoll = rollNum
+				midRoll = false
 				return
 			end
+
+			if not autoroll or haveBuff('amnesia') or haveBuff('impairment') then return end
 			
 			if player.main_job == 'COR' then
 				
 				local abil_recasts = windower.ffxi.get_ability_recasts()
 				local available_ja = S(windower.ffxi.get_abilities().job_abilities)
-				--windower.add_to_chat(7,'Double-Up Recast: '..abil_recasts[194]..'')
+
 				if available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == 10 then
+					midRoll = true
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
 				elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == (rollInfo[rollID][15] - 1) then
+					midRoll = true
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
 				elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum > 6 and rollNum == rollInfo[rollID][16] then
+					midRoll = true
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
-				elseif available_ja:contains(178) and abil_recasts[198] == 0 and not haveBuff('Crooked Cards') and rollNum < 9 then
+				elseif available_ja:contains(178) and abil_recasts[198] == 0 and not lastRollCrooked and rollNum < 9 then
+					midRoll = true
 					windower.send_command('wait 5;input /ja "Double-Up" <me>')
-				elseif rollNum < 6 or lastRoll == 11 then
+				elseif (rollNum < 6 or lastRoll == 11) and not lastRollCrooked then
+					midRoll = true
 					windower.send_command('wait 5;input /ja "Double-Up" <me>')
 				else
+					midRoll = false
 					lastRoll = rollNum
 				end
 			
 			elseif rollNum < 6 then
+				midRoll = true
 				windower.send_command('@wait 5;input /ja "Double-Up" <me>')
 			end
 		end
@@ -420,8 +428,8 @@ Cities = S{
 }
 
 function doRoll()
-	if Cities:contains(res.zones[windower.ffxi.get_info().zone].english) then return end
-	if not autoroll or haveBuff('amnesia') or haveBuff('impairment') then return end
+	--if Cities:contains(res.zones[windower.ffxi.get_info().zone].english) then return end
+	if not autoroll or haveBuff('amnesia') or haveBuff('impairment') or midRoll then return end
 	if haveBuff('Sneak') or haveBuff('Invisible') then return end
 	local player = windower.ffxi.get_player()
 	if not (player.main_job == 'COR' or player.sub_job == 'COR') then return end
@@ -436,6 +444,7 @@ function doRoll()
 
 	if not haveBuff(Rollindex[settings.Roll_ind_1]) and not haveBuff(Rollindex[settings.Roll_ind_2]) then
 		lastRoll = 0
+		lastRollCrooked = false
 	end
 	
 	if not haveBuff(Rollindex[settings.Roll_ind_1]) then
@@ -451,11 +460,24 @@ function doRoll()
 
 end
 
-windower.register_event('lose buff', doRoll)
+windower.register_event('lose buff', function(buff_id)
+	if buff_id == 601 then
+		local abil_recasts = windower.ffxi.get_ability_recasts()
+
+		if abil_recasts[193] > 45 and haveBuff("Double-Up Chance") then
+			lastRollCrooked = true
+		end
+	elseif buff_id == 308 then
+		midRoll = false
+	end
+end)
+
 
 windower.register_event('zone change', function()
 	zonedelay = 0
 	autoroll = false
+	lastRoll = 0
+	lastRollCrooked = false
 end)
 
 function create_display(settings)
@@ -541,3 +563,5 @@ windower.register_event('incoming chunk', function(id, data)
         displayBox:show()
     end
 end)
+
+doRoll:loop(5)
