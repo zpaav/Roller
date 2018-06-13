@@ -110,9 +110,9 @@ windower.register_event('addon command',function (...)
 			end
 		elseif cmd[1] == "roll" then
 			if cmd[2] == "roll1" then
-				windower.send_command('input /ja "'..Rollindex[settings.Roll_ind_1]..'" <me>')
+				windower.chat.input('/ja "'..Rollindex[settings.Roll_ind_1]..'" <me>')
 			elseif cmd[2] == "roll2" then
-				windower.send_command('input /ja "'..Rollindex[settings.Roll_ind_2]..'" <me>')
+				windower.chat.input('/ja "'..Rollindex[settings.Roll_ind_2]..'" <me>')
 			else
 				zonedelay = 6
 				if autoroll == false then
@@ -135,6 +135,13 @@ windower.register_event('addon command',function (...)
 		elseif cmd[1] == "tp" then
 			settings.Roll_ind_1 = 12
 			settings.Roll_ind_2 = 1
+			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
+			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
+			config.save(settings)
+			
+		elseif cmd[1] == "speed" or cmd[1] == "movespeed" or cmd[1]:startswith('bolter') then
+			settings.Roll_ind_1 = 21
+			settings.Roll_ind_2 = 21
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
@@ -438,7 +445,11 @@ function doRoll()
 	local abil_recasts = windower.ffxi.get_ability_recasts()
 	local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 
-	if player.main_job == 'COR' and abil_recasts[198] and abil_recasts[198] > 0 and abil_recasts[197] and abil_recasts[197] > 0 and abil_recasts[196] and abil_recasts[196] == 0 then windower.send_command('input /ja "Random Deal" <me>') return end
+	if player.main_job == 'COR' and abil_recasts[198] and abil_recasts[198] > 0 and abil_recasts[197] and abil_recasts[197] > 0 and abil_recasts[196] and abil_recasts[194] == 0 and abil_recasts[196] == 0 then 
+		windower.send_command('input /ja "Random Deal" <me>')
+		return 
+	end
+	
 	if player.main_job == 'COR' and haveBuff('Bust') and available_ja:contains(178) and abil_recasts[198] and abil_recasts[198] == 0 then windower.send_command('input /ja "Fold" <me>') return end
 	if abil_recasts[193] > 0 then return end
 
@@ -537,7 +548,7 @@ function update_displaybox()
 	--displayBox:append(spc)
 
  	displayBox:append("Roll 1: "..Rollindex[settings.Roll_ind_1].."   ")
-	if windower.ffxi.get_player().main_job == 'COR' then
+	if windower.ffxi.get_player().main_job == 'COR' and settings.Roll_ind_1 ~= settings.Roll_ind_2 then
 		displayBox:append("Roll 2: "..Rollindex[settings.Roll_ind_2].."   ")
 	end
 	displayBox:append("Autoroll: ")
