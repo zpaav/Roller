@@ -342,7 +342,7 @@ windower.register_event('action', function(act)
 
 		if act.actor_id == player.id then
 			--If roll is lucky or 11 returns.
-			if rollID ~= 123 then
+			if act.targets[1].actions[1].message ~= 424 then
 				lastRollCrooked = false
 			end
 			if rollNum == rollInfo[rollID][15] or rollNum == 11 then
@@ -357,7 +357,6 @@ windower.register_event('action', function(act)
 				
 				local abil_recasts = windower.ffxi.get_ability_recasts()
 				local available_ja = S(windower.ffxi.get_abilities().job_abilities)
-
 				if available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == 10 then
 					midRoll = true
 					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
@@ -475,7 +474,7 @@ windower.register_event('lose buff', function(buff_id)
 	if buff_id == 601 then
 		local abil_recasts = windower.ffxi.get_ability_recasts()
 
-		if abil_recasts[193] > 45 and haveBuff("Double-Up Chance") then
+		if abil_recasts[193] > 40 and haveBuff("Double-Up Chance") then
 			lastRollCrooked = true
 		end
 	elseif buff_id == 308 then
