@@ -488,6 +488,15 @@ windower.register_event('zone change', function()
 	autoroll = false
 	lastRoll = 0
 	lastRollCrooked = false
+	update_displaybox()
+end)
+
+windower.register_event('job change', function()
+	zonedelay = 0
+	autoroll = false
+	lastRoll = 0
+	lastRollCrooked = false
+	update_displaybox()
 end)
 
 function create_display(settings)
