@@ -118,7 +118,6 @@ windower.register_event('addon command',function (...)
 				if autoroll == false then
 					autoroll = true
 					windower.add_to_chat(7,'Enabling Automatic Rolling.')
-					doRoll()
 				elseif autoroll == true then
 					autoroll = false 
 					windower.add_to_chat(7,'Disabling Automatic Rolling.')
