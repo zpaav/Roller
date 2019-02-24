@@ -41,6 +41,7 @@ defaults.Roll_ind_2 = 19
 defaults.showdisplay = true
 defaults.displayx = nil
 defaults.displayy = nil
+defaults.incombat = false
 zonedelay = 6
 
 lastRoll = 0
@@ -90,6 +91,21 @@ windower.register_event('addon command',function (...)
 			else
 				windower.add_to_chat(7,'Not a recognized display subcommand. (Show, Hide)')
 			end				
+		elseif cmd[1] == "incombat" then
+			if cmd[2] == nil then
+				settings.incombat = not settings.incombat
+				config.save(settings)
+			elseif cmd[2] == 'on' or cmd[2] == 'true' then
+				settings.incombat = true
+				config.save(settings)
+				windower.add_to_chat(7,'In Combat Only: On.')
+			elseif cmd[2] == 'off' or cmd[2] == 'false' then
+				settings.incombat = false
+				config.save(settings)
+				windower.add_to_chat(7,'In Combat Only: Off.')
+			else
+				windower.add_to_chat(7,'Not a recognized incombat subcommand. (on, off)')
+			end
 		elseif cmd[1] == "midroll" and cmd[2] == 'off' then	
 			midRoll = false
 		elseif cmd[1] == "start" or cmd[1] == "go" or cmd[1] == "begin" or cmd[1] == "enable" or cmd[1] == "on" or cmd[1] == "engage" or cmd[1] == "resume" then
@@ -439,7 +455,7 @@ function doRoll()
 	local player = windower.ffxi.get_player()
 	if not (player.main_job == 'COR' or player.sub_job == 'COR') then return end
 	local status = res.statuses[windower.ffxi.get_player().status].english
-	if not (status == 'Idle' or status == 'Engaged') then return end
+	if not (((status == 'Idle') and not settings.incombat) or status == 'Engaged') then return end
 	local abil_recasts = windower.ffxi.get_ability_recasts()
 	local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 
@@ -563,6 +579,10 @@ function update_displaybox()
 		displayBox:append("On")
 	else
 		displayBox:append("Off")
+	end
+
+	if settings.incombat then
+		displayBox:append("  Combat")
 	end
     -- Update and display current info
     displayBox:update(info)
