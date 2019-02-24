@@ -41,7 +41,7 @@ defaults.Roll_ind_2 = 19
 defaults.showdisplay = true
 defaults.displayx = nil
 defaults.displayy = nil
-defaults.incombat = false
+defaults.engaged = false
 zonedelay = 6
 
 lastRoll = 0
@@ -91,20 +91,20 @@ windower.register_event('addon command',function (...)
 			else
 				windower.add_to_chat(7,'Not a recognized display subcommand. (Show, Hide)')
 			end				
-		elseif cmd[1] == "incombat" then
+		elseif cmd[1] == "engaged" then
 			if cmd[2] == nil then
-				settings.incombat = not settings.incombat
+				settings.engaged = not settings.engaged
 				config.save(settings)
 			elseif cmd[2] == 'on' or cmd[2] == 'true' then
-				settings.incombat = true
+				settings.engaged = true
 				config.save(settings)
-				windower.add_to_chat(7,'In Combat Only: On.')
+				windower.add_to_chat(7,'Engaged Only: On.')
 			elseif cmd[2] == 'off' or cmd[2] == 'false' then
-				settings.incombat = false
+				settings.engaged = false
 				config.save(settings)
-				windower.add_to_chat(7,'In Combat Only: Off.')
+				windower.add_to_chat(7,'Engaged Only: Off.')
 			else
-				windower.add_to_chat(7,'Not a recognized incombat subcommand. (on, off)')
+				windower.add_to_chat(7,'Not a recognized engaged subcommand. (on, off)')
 			end
 		elseif cmd[1] == "midroll" and cmd[2] == 'off' then	
 			midRoll = false
@@ -455,7 +455,7 @@ function doRoll()
 	local player = windower.ffxi.get_player()
 	if not (player.main_job == 'COR' or player.sub_job == 'COR') then return end
 	local status = res.statuses[windower.ffxi.get_player().status].english
-	if not (((status == 'Idle') and not settings.incombat) or status == 'Engaged') then return end
+	if not (((status == 'Idle') and not settings.engaged) or status == 'Engaged') then return end
 	local abil_recasts = windower.ffxi.get_ability_recasts()
 	local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 
@@ -581,8 +581,8 @@ function update_displaybox()
 		displayBox:append("Off")
 	end
 
-	if settings.incombat then
-		displayBox:append("  Combat")
+	if settings.engaged then
+		displayBox:append("  Engaged")
 	end
     -- Update and display current info
     displayBox:update(info)
