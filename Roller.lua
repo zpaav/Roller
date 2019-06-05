@@ -43,6 +43,8 @@ defaults.displayx = nil
 defaults.displayy = nil
 defaults.engaged = false
 zonedelay = 6
+stealthy = ''
+was_stealthy = ''
 
 lastRoll = 0
 lastRollCrooked = false
@@ -451,7 +453,14 @@ Cities = S{
 function doRoll()
 	--if Cities:contains(res.zones[windower.ffxi.get_info().zone].english) then return end
 	if not autoroll or haveBuff('amnesia') or haveBuff('impairment') or midRoll then return end
-	if haveBuff('Sneak') or haveBuff('Invisible') then return end
+	if haveBuff('Sneak') or haveBuff('Invisible') then
+		stealthy = true
+	else
+		stealthy = false
+	end
+	if not (stealthy == was_stealthy) then update_displaybox() end
+	was_stealthy = stealthy
+	if stealthy then return end
 	local player = windower.ffxi.get_player()
 	if not (player.main_job == 'COR' or player.sub_job == 'COR') then return end
 	local status = res.statuses[windower.ffxi.get_player().status].english
@@ -576,7 +585,13 @@ function update_displaybox()
 	end
 	displayBox:append("Autoroll: ")
 	if autoroll == true then
-		displayBox:append("On")
+		if haveBuff('Invisible') then
+			displayBox:append("Suspended: Invisible")
+		elseif haveBuff('Sneak') then
+			displayBox:append("Suspended: Sneak")
+		else
+			displayBox:append("On")
+		end
 	else
 		displayBox:append("Off")
 	end
