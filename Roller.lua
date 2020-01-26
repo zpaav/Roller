@@ -149,21 +149,28 @@ windower.register_event('addon command',function (...)
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 			
-		elseif cmd[1] == "tp" then
+		elseif cmd[1]:startswith('exp') or cmd[1]:startswith('cap') or cmd[1] == "cp" then
+			settings.Roll_ind_1 = 17
+			settings.Roll_ind_2 = 19
+			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
+			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
+			config.save(settings)
+			
+		elseif cmd[1] == "tp" or cmd[1] == "stp" then
 			settings.Roll_ind_1 = 12
 			settings.Roll_ind_2 = 1
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 			
-		elseif cmd[1] == "speed" or cmd[1] == "movespeed" or cmd[1]:startswith('bolter') then
+		elseif cmd[1] == "speed" or cmd[1] == "movespeed" or cmd[1]:startswith('bolt') then
 			settings.Roll_ind_1 = 21
 			settings.Roll_ind_2 = 21
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 			
-		elseif cmd[1] == "acc" or cmd[1] == "highacc" then
+		elseif cmd[1]:startswith('acc') or cmd[1] == "highacc" then
 			settings.Roll_ind_1 = 12
 			settings.Roll_ind_2 = 11
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
@@ -177,21 +184,21 @@ windower.register_event('addon command',function (...)
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1] == "nuke" or cmd[1] == "burst" then
+		elseif cmd[1] == "nuke" or cmd[1] == "burst" or cmd[1] == "matk" or cmd[1]:startswith('mag')  then
 			settings.Roll_ind_1 = 4
 			settings.Roll_ind_2 = 5
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1] == "pet" or cmd[1] == "petphy" then
+		elseif cmd[1] == "pet" or cmd[1]:startswith("petphy") then
 			settings.Roll_ind_1 = 9
 			settings.Roll_ind_2 = 14
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
 			windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
 			config.save(settings)
 		
-		elseif cmd[1] == "petnuke" or cmd[1] == "petmagic" then
+		elseif cmd[1] == "petnuke" or cmd[1]:startswith('petma') then
 			settings.Roll_ind_1 = 18
 			settings.Roll_ind_2 = 28
 			windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
