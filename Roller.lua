@@ -383,19 +383,19 @@ windower.register_event('action', function(act)
 				local available_ja = S(windower.ffxi.get_abilities().job_abilities)
 				if available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == 10 then
 					midRoll = true
-					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
+					windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
 				elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == (rollInfo[rollID][15] - 1) then
 					midRoll = true
-					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
-				elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum > 6 and rollNum == rollInfo[rollID][16] then
+					windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
+				elseif available_ja:contains(177) and abil_recasts[197] == 0 and not lastRoll == 11 and rollNum > 6 and rollNum == rollInfo[rollID][16] then
 					midRoll = true
-					windower.send_command('wait 1;input /ja "Snake Eye" <me>;wait 4;input /ja "Double-Up" <me>')
+					windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
 				elseif available_ja:contains(178) and abil_recasts[198] == 0 and not lastRollCrooked and rollNum < 9 then
 					midRoll = true
-					windower.send_command('wait 5;input /ja "Double-Up" <me>')
+					windower.send_command('wait 5.5;input /ja "Double-Up" <me>')
 				elseif (rollNum < 6 or lastRoll == 11) and not lastRollCrooked then
 					midRoll = true
-					windower.send_command('wait 5;input /ja "Double-Up" <me>')
+					windower.send_command('wait 5.5;input /ja "Double-Up" <me>')
 				else
 					midRoll = false
 					lastRoll = rollNum
@@ -403,7 +403,7 @@ windower.register_event('action', function(act)
 			
 			elseif rollNum < 6 then
 				midRoll = true
-				windower.send_command('@wait 5;input /ja "Double-Up" <me>')
+				windower.send_command('@wait 5.5;input /ja "Double-Up" <me>')
 			end
 		end
 	end
@@ -624,4 +624,4 @@ windower.register_event('incoming chunk', function(id, data)
     end
 end)
 
-doRoll:loop(5)
+doRoll:loop(3)
