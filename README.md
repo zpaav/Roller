@@ -1,8 +1,8 @@
 # Roller
-Author: Selindrile
+Original Author: Selindrile. Upkept by Fendo
 Thanks to: Balloon for creating Rolltracker
 
-Version: 1.3
+Version: 2023.01.26
 Automatically performs Corsair rolls.
 
 # Commands:
