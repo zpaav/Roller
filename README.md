@@ -12,6 +12,7 @@ Automatically performs Corsair rolls.
 - Roller Roll1 (Name of Roll)    	- Sets the first roll
 - Roller Roll2 (Name of Roll)		- Sets the second roll
 - Roller engaged (on|off)     If on, will only roll while in combat this is also a toggle.
+- Roller display (on|show or off|hide) - Shows or hides the Roller display.
 
 # Presets:
 
