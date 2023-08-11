@@ -1,3 +1,4 @@
+
 --Copyright (c) 2016, Selindrile, 2023 Fendo
 --All rights reserved.
 
@@ -25,7 +26,7 @@
 --SOFTWARE, EVEN IFIF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 _addon.name = 'Roller'
-_addon.version = '2023.01.27'
+_addon.version = '2023.08.10'
 _addon.author = 'Originally Selindrile, thanks to: Balloon and Lorand, Fendo upkeeping.'
 _addon.commands = {'roller','roll'}
 
@@ -36,12 +37,13 @@ packets = require('packets')
 texts = require('texts')
 
 defaults = {}
-defaults.Roll_ind_1 = 17
-defaults.Roll_ind_2 = 19
+defaults.Roll_ind_1 = 8
+defaults.Roll_ind_2 = 12
 defaults.showdisplay = true
 defaults.displayx = nil
 defaults.displayy = nil
 defaults.engaged = false
+defaults.holdRolling_TP = 0 
 zonedelay = 6
 stealthy = ''
 was_stealthy = ''
@@ -55,7 +57,7 @@ settings = config.load(defaults)
 windower.register_event('addon command',function (...)
     cmd = {...}
 
-     if cmd[1] ~= nil then
+    if cmd[1] ~= nil then
         cmd[1] = cmd[1]:lower()
     end
 
@@ -76,8 +78,12 @@ windower.register_event('addon command',function (...)
 
     else
         if cmd[1] == "help" then
-            windower.add_to_chat(7,'To start or stop auto rolling type //roller roll')
-            windower.add_to_chat(7,'To set rolls use //roller roll# rollname')
+            windower.add_to_chat(7,'To start or stop auto rolling type //roller roll.')
+            windower.add_to_chat(7,'To set rolls use //roller roll# rollname.')
+            windower.add_to_chat(7,'To set roller to hold on TP Value use //roller holdtp # (1000-2999) or off|false|0 to turn off.')
+            windower.add_to_chat(7,'To set roller to only roll while engaged use //roller engaged on|off or can pass in nothing to toggle.')
+            windower.add_to_chat(7,'To show or hide roller display box use //roller display on|show or off|hide')
+            windower.add_to_chat(7,'Check the README for more details.')
         elseif cmd[1] == "display" then
             if cmd[2] == nil then
                 settings.showdisplay = not settings.showdisplay
@@ -107,6 +113,28 @@ windower.register_event('addon command',function (...)
                 windower.add_to_chat(7,'Engaged Only: Off.')
             else
                 windower.add_to_chat(7,'Not a recognized engaged subcommand. (on, off)')
+            end
+        elseif cmd[1] == "holdtp" then
+            if cmd[2] == nil then
+                settings.holdRolling_TP = not settings.holdRolling_TP
+                config.save(settings)
+            elseif tonumber(cmd[2]) ~= nil then
+                local self_tp = tonumber(cmd[2]) or 0
+                if self_tp <  1000 then
+                    self_tp = 1000
+                end
+                if self_tp >  2999 then
+                    self_tp = 2999
+                end
+                settings.holdRolling_TP = self_tp
+                config.save(settings)
+                windower.add_to_chat(7,'Will Hold Rolls if TP is over ' ..tostring(settings.holdRolling_TP))
+            elseif cmd[2] == 'off' or cmd[2] == 'false' then
+                settings.holdRolling_TP = 0
+                config.save(settings)
+                windower.add_to_chat(7,'Will No Longer Hold Rolls for TP.')
+            else
+                windower.add_to_chat(7,'Not a recognized holdtp subcommand. (number, false)')
             end
         elseif cmd[1] == "midroll" and cmd[2] == 'off' then
             midRoll = false
@@ -143,22 +171,29 @@ windower.register_event('addon command',function (...)
             end
 
         elseif cmd[1] == "melee" then
-            settings.Roll_ind_1 = 12
-            settings.Roll_ind_2 = 8
+            settings.Roll_ind_1 = 8
+            settings.Roll_ind_2 = 12
             windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
             windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
             config.save(settings)
 
         elseif cmd[1]:startswith('exp') or cmd[1]:startswith('cap') or cmd[1] == "cp" then
             settings.Roll_ind_1 = 17
-            settings.Roll_ind_2 = 19
+            settings.Roll_ind_2 = 8
             windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
             windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
             config.save(settings)
 
         elseif cmd[1] == "tp" or cmd[1] == "stp" then
             settings.Roll_ind_1 = 12
-            settings.Roll_ind_2 = 1
+            settings.Roll_ind_2 = 25
+            windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
+            windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
+            config.save(settings)
+
+        elseif cmd[1] == "dynacor" or cmd[1] == "cordyna" then
+            settings.Roll_ind_1 = 4
+            settings.Roll_ind_2 = 25
             windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
             windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
             config.save(settings)
@@ -177,9 +212,9 @@ windower.register_event('addon command',function (...)
             windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
             config.save(settings)
 
-        elseif cmd[1] == "ws" or cmd[1] == "wsd" then
-            settings.Roll_ind_1 = 8
-            settings.Roll_ind_2 = 1
+        elseif cmd[1] == "attspeed" or cmd[1] == "attspeed" then
+            settings.Roll_ind_1 = 1
+            settings.Roll_ind_2 = 24
             windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
             windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
             config.save(settings)
@@ -187,6 +222,13 @@ windower.register_event('addon command',function (...)
         elseif cmd[1] == "nuke" or cmd[1] == "burst" or cmd[1] == "matk" or cmd[1]:startswith('mag')  then
             settings.Roll_ind_1 = 4
             settings.Roll_ind_2 = 5
+            windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
+            windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
+            config.save(settings)
+
+        elseif cmd[1] == "smnpet" or cmd[1]:startswith('smn') then
+            settings.Roll_ind_1 = 9
+            settings.Roll_ind_2 = 18
             windower.add_to_chat(7,'Setting Roll 1 to: '..Rollindex[settings.Roll_ind_1]..'')
             windower.add_to_chat(7,'Setting Roll 2 to: '..Rollindex[settings.Roll_ind_2]..'')
             config.save(settings)
@@ -288,7 +330,7 @@ windower.register_event('addon command',function (...)
             else
                 windower.add_to_chat(7,'Invalid roll name, Roll 2 remains: '..Rollindex[settings.Roll_ind_2]..'')
             end
-         end
+        end
 
     end
 
@@ -307,38 +349,38 @@ windower.register_event('load', function()
                 'Miser\'s Roll','Companion\'s Roll','Avenger\'s Roll','Naturalist\'s Roll','Runeist\'s Roll'}
 
     local rollInfoTemp = {
-        -- Okay, this goes 1-11 boost, Bust effect, Effect, Lucky, +1 Phantom Roll Effect, Bonus Equipment and Effect,
-        ['Chaos'] = {6,8,9,25,11,13,16,3,17,19,31,"-4", '% Attack!', 4, 8},
-        ['Fighter\'s'] = {2,2,3,4,12,5,6,7,1,9,18,'-4','% Double-Attack!', 5, 9},
-        ['Wizard\'s'] = {4,6,8,10,25,12,14,17,2,20,30, "-10", ' MAB', 5, 9},
-        ['Evoker\'s'] = {1,1,1,1,3,2,2,2,1,3,4,'-1', ' Refresh!',5, 9},
-        ['Rogue\'s'] = {2,2,3,4,12,5,6,6,1,8,14,'-6', '% Critical Hit Rate!', 5, 9},
-        ['Corsair\'s'] = {10, 11, 11, 12, 20, 13, 15, 16, 8, 17, 24, '-6', '% Experience Bonus',5, 9},
-        ['Hunter\'s'] = {10,13,15,40,18,20,25,5,27,30,50,'-?', ' Accuracy Bonus',4, 8},
-        ['Magus\'s'] = {5,20,6,8,9,3,10,13,14,15,25,'-8',' Magic Defense Bonus',2, 6},
-        ['Healer\'s'] = {3,4,12,5,6,7,1,8,9,10,16,'-4','% Cure Potency',3, 7},
-        ['Drachen'] = {10,13,15,40,18,20,25,5,28,30,50,'-8',' Pet: Accuracy Bonus',4, 8},
-        ['Choral'] = {8,42,11,15,19,4,23,27,31,35,50,'+25', '- Spell Interruption Rate',2, 6},
-        ['Monk\'s'] = {8,10,32,12,14,15,4,20,22,24,40,'-?', ' Subtle Blow', 3, 7},
+        -- Okay, this goes 1-11 boost, Bust effect, Effect, Lucky, Unlucky
+        ['Allies\''] = {6,7,17,9,11,13,15,17,17,5,17,'?','% Skillchain Damage',3, 10},
+        ['Avenger\'s'] = {'?','?','?','?','?','?','?','?','?','?','?','?',' Counter Rate',4, 8},
         ['Beast'] = {6,8,9,25,11,13,16,3,17,19,31,'-10', '% Pet: Attack Bonus',4, 8},
-        ['Samurai'] = {7,32,10,12,14,4,16,20,22,24,40,'-10',' Store TP Bonus',2, 6},
-        ['Warlock\'s'] = {2,3,4,12,5,6,7,1,8,9,15,'-5',' Magic Accuracy Bonus',4, 8},
-        ['Puppet'] = {5,8,35,11,14,18,2,22,26,30,40,'-8',' Pet: Magic Attack Bonus',3, 7},
-        ['Gallant\'s'] = {4,5,15,6,7,8,3,9,10,11,20,'-10','% Defense Bonus', 3, 7},
-        ['Dancer\'s'] = {3,4,12,5,6,7,1,8,9,10,16,'-4',' Regen',3, 7},
+        ['Blitzer\'s'] = {2,3.4,4.5,11.3,5.3,6.4,7.2,8.3,1.5,10.2,12.1,'-3', '% Attack delay reduction',4, 9},
         ['Bolter\'s'] = {0.3,0.3,0.8,0.4,0.4,0.5,0.5,0.6,0.2,0.7,1.0,'-8','% Movement Speed',3, 9},
         ['Caster\'s'] = {6,15,7,8,9,10,5,11,12,13,20,'-10','% Fast Cast',2, 7},
-        ['Tactician\'s'] = {10,10,10,10,30,10,10,0,20,20,40,'-10',' Regain',5, 8},
-        ['Miser\'s'] = {30,50,70,90,200,110,20,130,150,170,250,'0',' Save TP',5, 7},
-        ['Ninja'] = {4,5,5,14,6,7,9,2,10,11,18,'-10',' Evasion Bonus',4, 8},
-        ['Scholar\'s'] = {'?','?','?','?','?','?','?','?','?','?','?','?',' Conserve MP',2, 6},
-        ['Allies\''] = {6,7,17,9,11,13,15,17,17,5,17,'?','% Skillchain Damage',3, 10},
-        ['Companion\'s'] = {{4,20},{20, 50},{6,20},{8, 20},{10,30},{12,30},{14,30},{16,40},{18, 40}, {3,10},{30, 70},'-?',' Pet: Regen/Regain',2, 10},
-        ['Avenger\'s'] = {'?','?','?','?','?','?','?','?','?','?','?','?',' Counter Rate',4, 8},
-        ['Blitzer\'s'] = {2,3.4,4.5,11.3,5.3,6.4,7.2,8.3,1.5,10.2,12.1,'-?', '% Attack delay reduction',4, 9},
+        ['Chaos'] = {6,8,9,25,11,13,16,3,17,19,31,"-4", '% Attack!', 4, 8},
+        ['Choral'] = {8,42,11,15,19,4,23,27,31,35,50,'+25', '- Spell Interruption Rate',2, 6},
+        ['Companion\'s'] = {{4,20},{20, 50},{6,20},{8, 20},{10,30},{12,30},{14,30},{16,40},{18, 40}, {3,10},{30, 70},'0',' Pet: Regen/Regain',2, 10},
+        ['Corsair\'s'] = {10, 11, 11, 12, 20, 13, 15, 16, 8, 17, 24, '-6', '% Experience Bonus',5, 9},
         ['Courser\'s'] = {'?','?','?','?','?','?','?','?','?','?','?','?',' Snapshot',3, 9},
-        ['Runeist\'s'] = {'?','?','?','?','?','?','?','?','?','?','?','?',' Magic Evasion',4, 8},
-        ['Naturalist\'s'] = {'?','?','?','?','?','?','?','?','?','?','?','?',' Enhancing Magic Duration',3, 7}
+        ['Dancer\'s'] = {3,4,12,5,6,7,1,8,9,10,16,'-4',' Regen',3, 7},
+        ['Drachen'] = {10,13,15,40,18,20,25,5,28,30,50,'-8',' Pet: Accuracy Bonus',4, 8},
+        ['Evoker\'s'] = {1,1,1,1,3,2,2,2,1,3,4,'-1', ' Refresh!',5, 9},
+        ['Fighter\'s'] = {2,2,3,4,12,5,6,7,1,9,18,'-4','% Double-Attack!', 5, 9},
+        ['Gallant\'s'] = {4,5,15,6,7,8,3,9,10,11,20,'-10','% Defense Bonus', 3, 7},
+        ['Healer\'s'] = {3,4,12,5,6,7,1,8,9,10,16,'-4','% Cure Potency',3, 7},
+        ['Hunter\'s'] = {10,13,15,40,18,20,25,5,27,30,50,'-15', ' Accuracy Bonus',4, 8},
+        ['Magus\'s'] = {5,20,6,8,9,3,10,13,14,15,25,'-8',' Magic Defense Bonus',2, 6},
+        ['Miser\'s'] = {30,50,70,90,200,110,20,130,150,170,250,'0',' Save TP',5, 7},
+        ['Monk\'s'] = {8,10,32,12,14,15,4,20,22,24,40,'-?', ' Subtle Blow', 3, 7},
+        ['Naturalist\'s'] = {6,7,15,8,9,10,5,11,12,13,20,'-5','% Enhancing Magic Duration',3,7,},
+        ['Ninja'] = {4,5,5,14,6,7,9,2,10,11,18,'-10',' Evasion Bonus',4, 8},
+        ['Puppet'] = {5,8,35,11,14,18,2,22,26,30,40,'-8',' Pet: Magic Attack Bonus',3, 7},
+        ['Rogue\'s'] = {2,2,3,4,12,5,6,6,1,8,14,'-6', '% Critical Hit Rate!', 5, 9},
+        ['Runeist\'s'] = {10,13,15,40,18,20,25,5,28,30,50,'-15',' Evasion Bonus',4,8},
+        ['Samurai'] = {7,32,10,12,14,4,16,20,22,24,40,'-10',' Store TP Bonus',2, 6},
+        ['Scholar\'s'] ={2,10,3,4,4,1,5,6,7,7,12,'-3','% Conserve MP',2,6,},
+        ['Tactician\'s'] = {10,10,10,10,30,10,10,0,20,20,40,'-10',' Regain',5, 8},
+        ['Warlock\'s'] = {2,3,4,12,5,6,7,1,8,9,15,'-5',' Magic Accuracy Bonus',4, 8},
+        ['Wizard\'s'] = {4,6,8,10,25,12,14,17,2,20,30, "-10", ' MAB', 5, 9},
     }
 
     rollInfo = {}
@@ -381,18 +423,26 @@ windower.register_event('action', function(act)
 
                 local abil_recasts = windower.ffxi.get_ability_recasts()
                 local available_ja = S(windower.ffxi.get_abilities().job_abilities)
+                -- Snake Eye on 10 for the XI
                 if available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == 10 then
                     midRoll = true
                     windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
+                -- Use Snake eye to hit the lucky number if one less than. 
                 elseif available_ja:contains(177) and abil_recasts[197] == 0 and rollNum == (rollInfo[rollID][15] - 1) then
                     midRoll = true
                     windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
+                -- Use Snake eye if the first roll set was not an XI and the second roll is sitting on an unlucky number and over six. 
                 elseif available_ja:contains(177) and abil_recasts[197] == 0 and not lastRoll == 11 and rollNum > 6 and rollNum == rollInfo[rollID][16] then
+                    midRoll = true
+                    windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
+                -- Use Snake eye if the first roll set was not an XI and the second roll current number is over six and will not hit an unlucky with a Snake eye roll. 
+                elseif available_ja:contains(177) and abil_recasts[197] == 0 and not lastRoll == 11 and rollNum > 6 and rollNum + 1 ~= rollInfo[rollID][16] then
                     midRoll = true
                     windower.send_command('wait 1.1;input /ja "Snake Eye" <me>;wait 4.4;input /ja "Double-Up" <me>')
                 elseif available_ja:contains(178) and abil_recasts[198] == 0 and not lastRollCrooked and rollNum < 9 then
                     midRoll = true
                     windower.send_command('wait 5.5;input /ja "Double-Up" <me>')
+                -- Roll if less than six or last roll is at an XI (we don't care if it busts)
                 elseif (rollNum < 6 or lastRoll == 11) and not lastRollCrooked then
                     midRoll = true
                     windower.send_command('wait 5.5;input /ja "Double-Up" <me>')
@@ -400,7 +450,7 @@ windower.register_event('action', function(act)
                     midRoll = false
                     lastRoll = rollNum
                 end
-
+            -- Double up if less than six. 
             elseif rollNum < 6 then
                 midRoll = true
                 windower.send_command('@wait 5.5;input /ja "Double-Up" <me>')
@@ -470,6 +520,9 @@ function doRoll()
     if stealthy then return end
     local player = windower.ffxi.get_player()
     if not (player.main_job == 'COR' or player.sub_job == 'COR') then return end
+    
+    if settings.holdRolling_TP ~= 0 and (player.vitals.tp > settings.holdRolling_TP) then return end
+
     local status = res.statuses[windower.ffxi.get_player().status].english
     if not (((status == 'Idle') and not settings.engaged) or status == 'Engaged') then return end
     local abil_recasts = windower.ffxi.get_ability_recasts()
@@ -586,7 +639,7 @@ function update_displaybox()
     displayBox:clear()
     --displayBox:append(spc)
 
-     displayBox:append("Roll 1: "..Rollindex[settings.Roll_ind_1].."   ")
+    displayBox:append("Roll 1: "..Rollindex[settings.Roll_ind_1].."   ")
     if windower.ffxi.get_player().main_job == 'COR' and settings.Roll_ind_1 ~= settings.Roll_ind_2 then
         displayBox:append("Roll 2: "..Rollindex[settings.Roll_ind_2].."   ")
     end
@@ -606,6 +659,11 @@ function update_displaybox()
     if settings.engaged then
         displayBox:append("  Engaged")
     end
+
+    if settings.holdRolling_TP ~= 0 then
+        displayBox:append("  Holding Rolls TP: " ..tostring(settings.holdRolling_TP))
+    end
+
     -- Update and display current info
     displayBox:update(info)
     displayBox:show()

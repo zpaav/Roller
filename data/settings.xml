@@ -4,6 +4,7 @@
         <Roll_ind_1>8</Roll_ind_1>
         <Roll_ind_2>12</Roll_ind_2>
         <engaged>false</engaged>
+        <holdRolling_TP>2500</holdRolling_TP>
         <showdisplay>true</showdisplay>
     </global>
 </settings>
