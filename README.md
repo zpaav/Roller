@@ -16,12 +16,14 @@ Automatically performs Corsair rolls.
 
 # Presets:
 
-- Roller melee
-- Roller xp
-- Roller TP
-- Roller Acc
-- Roller Nuke
-- Roller Pet
-- Roller PetNuke
-- Roller smnpet
-- Roller attspeed
+- Roller melee - Chaos | Samurai
+- Roller xp - Corsair | Chaos
+- Roller TP - Samurai | Tactician
+- Roller speed - Bolter | Bolter
+- Roller dynacor - Wizard | Tactician
+- Roller Acc - Samurai | Hunter
+- Roller Nuke - Wizard | Warlock
+- Roller Pet - Beast | Drachen
+- Roller PetNuke - Puppet | Companion
+- Roller smnpet - Beast | Puppet
+- Roller attspeed - Fighter | Blitzer
